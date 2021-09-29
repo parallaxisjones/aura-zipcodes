@@ -60,7 +60,7 @@ describe("basic tests", () => {
       .catch(console.error);
   });
 
-  test("search handles zipcode", () => {
+  test("search handles latlong", () => {
     search
       .searchLatLong({
         lat: "42.06",
@@ -87,6 +87,33 @@ describe("basic tests", () => {
             },
           ])
         );
+      })
+      .catch(console.error);
+  });
+
+  test("search handles filtering", () => {
+    search
+      .searchLatLong(
+        {
+          lat: "42.06",
+          long: "-72.61",
+          distance: 10,
+        },
+        (result) => parseInt(result.estimated_population) < 10000
+      )
+      .then((data) => {
+        expect(data.length).toBe(29);
+      })
+      .catch(console.error);
+
+    search
+      .searchLatLong({
+        lat: "42.06",
+        long: "-72.61",
+        distance: 10,
+      })
+      .then((data) => {
+        expect(data.length).toBe(44);
       })
       .catch(console.error);
   });

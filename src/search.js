@@ -17,26 +17,30 @@ class SearchApi {
   getPipeline(onData) {
     return chain([this.stream, parser(), streamArray(), onData]);
   }
-  static search(searchFn) {
+  static search(searchFn, filterFn) {
     const codes = new SearchApi();
     return new Promise((resolve, reject) => {
       let results = [];
       const pipeline = codes.getPipeline(searchFn);
 
       pipeline.on("data", (d) => results.push(d));
-      pipeline.on("finish", () => resolve(results));
+      pipeline.on("finish", () =>
+        resolve(
+          typeof filterFn === "function" ? results.filter(filterFn) : results
+        )
+      );
       pipeline.on("error", reject);
     });
   }
-  static searchZip(partial) {
+  static searchZip(partial, filterFn) {
     return SearchApi.search(({ value }) => {
       if (value.zip.indexOf(partial) === 0) {
         return value;
       }
-    });
+    }, filterFn);
   }
 
-  static searchCity(partial) {
+  static searchCity(partial, filterFn) {
     return SearchApi.search(({ value }) => {
       const cities = [value.primary_city, ...(value.acceptable_cities || [])];
       if (
@@ -46,10 +50,10 @@ class SearchApi {
       ) {
         return value;
       }
-    });
+    }, filterFn);
   }
 
-  static searchLatLong({ lat, long, distance, unit = "M" }) {
+  static searchLatLong({ lat, long, distance, unit = "M" }, filterFn) {
     return SearchApi.search(({ value }) => {
       if (
         Boolean(
@@ -59,7 +63,7 @@ class SearchApi {
       ) {
         return value;
       }
-    });
+    }, filterFn);
   }
 }
 
