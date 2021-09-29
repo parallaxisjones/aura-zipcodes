@@ -9,7 +9,6 @@ class SearchApi {
   constructor() {
     var filename = `${__dirname}/${ZIPCODE_FILENAME}`;
 
-    // This line opens the file as a readable stream
     this.stream = fs.createReadStream(filename, {
       flags: "r",
       encoding: "utf-8",

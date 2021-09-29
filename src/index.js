@@ -36,16 +36,16 @@ module.exports.handler = async (event, context) => {
       }
       case "city": {
         const { city } = queryStringParameters.params;
-        if (!zipcode) {
+        if (!city) {
           throw new Error("Missing City Parameter");
         }
         return search
-          .searchZip(zipcode)
+          .searchCity(city)
           .then(resolve)
           .catch(reject);
       }
       default:
-        throw new Error("no search type specified");
+        throw new Error("search type not implemented");
     }
   });
 };
