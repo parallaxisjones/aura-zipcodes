@@ -4,7 +4,7 @@ module.exports.handler = async (event, context) => {
   return new Promise((resolve, reject) => {
     const { httpMethod, queryStringParameters } = event;
 
-    if (!httpMethod === "GET" || queryStringParameters.type) {
+    if (httpMethod !== "GET" || !queryStringParameters.type) {
       throw new Error("Not Allowed");
     }
 
